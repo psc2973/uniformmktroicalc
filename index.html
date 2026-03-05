@@ -351,6 +351,22 @@
 
       <div class="inp-group">
         <div class="inp-row">
+          <span class="inp-label">Speed-to-market improvement with Uniform</span>
+          <span class="inp-val" id="lbl-speed">60%</span>
+        </div>
+        <input type="range" id="speed" min="10" max="80" value="60" step="5">
+      </div>
+
+      <div class="inp-group">
+        <div class="inp-row">
+          <span class="inp-label">Fully-loaded developer cost (annual)</span>
+          <span class="inp-val" id="lbl-devcost">$175K</span>
+        </div>
+        <input type="range" id="devcost" min="100000" max="500000" value="175000" step="5000">
+      </div>
+
+      <div class="inp-group">
+        <div class="inp-row">
           <span class="inp-label">Annual platform investment</span>
           <span class="inp-val" id="lbl-investment">$200K</span>
         </div>
@@ -360,10 +376,8 @@
       <div class="assumptions">
         <div class="assumptions-lbl">Baked-in assumptions</div>
         <p>
-          60% speed-to-market improvement (TELUS achieved 50%) ·
           50% of dev-blocked campaigns marketers can own ·
-          40% platform adoption ·
-          $175K blended developer cost
+          40% platform adoption
         </p>
         <a href="#" class="how-toggle" id="how-toggle" onclick="toggleHow(event)" style="display:inline-block;margin-top:8px;">How this is calculated ↓</a>
         <div class="how-body" id="how-body">
@@ -375,7 +389,7 @@
           <div class="how-section">
             <div class="how-title">Launch Gap Days</div>
             <div class="how-formula">Current cycle weeks × speed improvement % × 7</div>
-            <p class="how-note">At 5 weeks and 60% improvement: 5 × 0.60 × 7 = <strong>21 days</strong> saved per campaign.</p>
+            <p class="how-note" id="how-gap-note">Loading…</p>
           </div>
           <div class="how-section" style="border-bottom:none;padding-bottom:0;margin-bottom:0;">
             <div class="how-title">Why multiply by 12?</div>
@@ -440,32 +454,34 @@
     }
 
     // Fixed assumptions
-    const SPEED_PCT   = 0.60;
     const DEV_OWN_PCT = 0.50;
     const ADOPTION    = 0.40;
-    const DEV_COST    = 175000;
 
     function calc() {
       const revenue    = +document.getElementById('revenue').value;
       const weeks      = +document.getElementById('weeks').value;
       const campaigns  = +document.getElementById('campaigns').value;
       const investment = +document.getElementById('investment').value;
+      const speedPct   = +document.getElementById('speed').value / 100;
+      const devCost    = +document.getElementById('devcost').value;
 
       // Labels
       document.getElementById('lbl-revenue').textContent    = fmtShort(revenue);
       document.getElementById('lbl-weeks').textContent      = weeks + (weeks === 1 ? ' week' : ' weeks');
       document.getElementById('lbl-campaigns').textContent  = campaigns;
       document.getElementById('lbl-investment').textContent = fmtShort(investment);
+      document.getElementById('lbl-speed').textContent      = Math.round(speedPct * 100) + '%';
+      document.getElementById('lbl-devcost').textContent    = fmtShort(devCost);
 
       // Platform drag
       const dailyRev      = (revenue / 12) / 30;
-      const targetWeeks   = weeks * (1 - SPEED_PCT);
+      const targetWeeks   = weeks * (1 - speedPct);
       const gapDays       = Math.round((weeks - targetWeeks) * 7);
       const annualDrag    = dailyRev * gapDays * 12;
 
       // Value
-      const capValue      = campaigns * DEV_COST * DEV_OWN_PCT * ADOPTION;
-      const revAccel      = revenue * SPEED_PCT * 0.75 * ADOPTION;
+      const capValue      = campaigns * devCost * DEV_OWN_PCT * ADOPTION;
+      const revAccel      = revenue * speedPct * 0.75 * ADOPTION;
       const grossValue    = capValue + revAccel;
       const netValue      = grossValue - investment;
       const multiple      = (grossValue / investment).toFixed(1);
@@ -489,6 +505,9 @@
       document.getElementById('how-breakdown-text').innerHTML =
         `(<strong>${fmtShort(revenue)}</strong> ÷ 12 ÷ 30) = <strong>${fmtFull(dailyRev)}</strong>/day &nbsp;×&nbsp; ` +
         `<strong>${gapDays} days</strong> gap &nbsp;×&nbsp; 12 campaigns = <strong>${fmtFull(annualDrag)}/year</strong>`;
+      document.getElementById('how-gap-note').innerHTML =
+        `At <strong>${weeks} weeks</strong> and <strong>${Math.round(speedPct * 100)}%</strong> improvement: ` +
+        `${weeks} × ${speedPct.toFixed(2)} × 7 = <strong>${gapDays} days</strong> saved per campaign.`;
 
       document.getElementById('out-narrative').innerHTML =
         `Your team currently takes <strong>${weeks} weeks</strong> from idea to live. ` +
