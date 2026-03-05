@@ -144,6 +144,52 @@
     }
     .assumptions a:hover { text-decoration: underline; }
 
+    .how-body {
+      display: none;
+      margin-top: 16px;
+      background: #060e1f;
+      border: 1px solid #19325a;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+    .how-body.open { display: block; }
+    .how-section {
+      padding: 14px 16px;
+      border-bottom: 1px solid #19325a;
+      margin-bottom: 0;
+    }
+    .how-title {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #3b82f6;
+      margin-bottom: 6px;
+    }
+    .how-formula {
+      font-family: 'SF Mono', 'Fira Code', monospace;
+      font-size: 12px;
+      color: #e2e8f0;
+      background: rgba(59,130,246,.08);
+      border: 1px solid rgba(59,130,246,.15);
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 8px;
+      line-height: 1.5;
+    }
+    .how-breakdown {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.6;
+    }
+    .how-breakdown strong { color: #e2e8f0; }
+    .how-note {
+      font-size: 12px;
+      color: #64748b;
+      line-height: 1.6;
+    }
+    .how-note strong { color: #e2e8f0; }
+
     /* ── OUTPUTS PANEL ────────────────────────────────────── */
     .outputs-panel { display: flex; flex-direction: column; gap: 16px; }
 
@@ -319,7 +365,23 @@
           40% platform adoption ·
           $175K blended developer cost
         </p>
-        <a href="#" style="display:inline-block;margin-top:8px;">How this is calculated ↓</a>
+        <a href="#" class="how-toggle" id="how-toggle" onclick="toggleHow(event)" style="display:inline-block;margin-top:8px;">How this is calculated ↓</a>
+        <div class="how-body" id="how-body">
+          <div class="how-section">
+            <div class="how-title">Cost of Inaction</div>
+            <div class="how-formula">(Annual revenue ÷ 12 ÷ 30) × launch gap days × 12</div>
+            <div class="how-breakdown" id="how-breakdown-text">Loading…</div>
+          </div>
+          <div class="how-section">
+            <div class="how-title">Launch Gap Days</div>
+            <div class="how-formula">Current cycle weeks × speed improvement % × 7</div>
+            <p class="how-note">At 5 weeks and 60% improvement: 5 × 0.60 × 7 = <strong>21 days</strong> saved per campaign.</p>
+          </div>
+          <div class="how-section" style="border-bottom:none;padding-bottom:0;margin-bottom:0;">
+            <div class="how-title">Why multiply by 12?</div>
+            <p class="how-note">Every campaign in the year absorbs the same delay. The cost compounds across your full campaign calendar — it never shows up as a line item, but it accrues every cycle.</p>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -423,6 +485,11 @@
         ? 'Faster than one launch cycle'
         : Math.ceil(breakevenDays / 7) + ' weeks to payback';
 
+      // How-calculated live breakdown
+      document.getElementById('how-breakdown-text').innerHTML =
+        `(<strong>${fmtShort(revenue)}</strong> ÷ 12 ÷ 30) = <strong>${fmtFull(dailyRev)}</strong>/day &nbsp;×&nbsp; ` +
+        `<strong>${gapDays} days</strong> gap &nbsp;×&nbsp; 12 campaigns = <strong>${fmtFull(annualDrag)}/year</strong>`;
+
       document.getElementById('out-narrative').innerHTML =
         `Your team currently takes <strong>${weeks} weeks</strong> from idea to live. ` +
         `Uniform cuts that to <strong>${targetWeeks.toFixed(1)} weeks</strong>. ` +
@@ -430,6 +497,14 @@
         `a number that never appears on the migration budget slide. ` +
         `Uniform returns <strong>${fmtFull(netValue)} net</strong> and pays for itself in <strong>${breakevenDays} days</strong>. ` +
         `Every week you wait is another ${fmtFull((annualDrag / 52))} out the door.`;
+    }
+
+    function toggleHow(e) {
+      e.preventDefault();
+      const body   = document.getElementById('how-body');
+      const toggle = document.getElementById('how-toggle');
+      const open   = body.classList.toggle('open');
+      toggle.textContent = open ? 'How this is calculated ↑' : 'How this is calculated ↓';
     }
 
     document.querySelectorAll('input[type=range]').forEach(el => {
