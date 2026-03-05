@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Uniform — See What Platform Drag Costs You</title>
+  <title>Uniform — Platform ROI Calculator</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -12,15 +12,14 @@
       background: #060e1f;
       color: #e2e8f0;
       min-height: 100vh;
-      padding: 32px 20px 60px;
+      padding: 48px 20px 80px;
     }
 
-    /* ── HERO ─────────────────────────────────────────────────── */
+    /* ── HERO ─────────────────────────────────────────────── */
     .hero {
-      max-width: 1060px;
-      margin: 0 auto 36px;
+      max-width: 760px;
+      margin: 0 auto 48px;
       text-align: center;
-      padding: 0 12px;
     }
     .hero-eyebrow {
       font-size: 11px;
@@ -28,685 +27,416 @@
       letter-spacing: 2.5px;
       text-transform: uppercase;
       color: #f59e0b;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
     .hero h1 {
-      font-size: clamp(26px, 4vw, 40px);
+      font-size: clamp(26px, 4vw, 42px);
       font-weight: 900;
       color: #fff;
       line-height: 1.18;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
-    .hero h1 em {
-      font-style: normal;
-      color: #3b82f6;
-    }
+    .hero h1 em { font-style: normal; color: #3b82f6; }
     .hero p {
-      font-size: 15px;
-      color: #94a3b8;
-      max-width: 560px;
+      font-size: 16px;
+      color: #64748b;
+      line-height: 1.65;
+      max-width: 520px;
       margin: 0 auto;
-      line-height: 1.6;
     }
 
-    /* ── LIVE DRAG TICKER ─────────────────────────────────────── */
-    .ticker-bar {
-      max-width: 1060px;
-      margin: 0 auto 28px;
-      background: linear-gradient(135deg, #1c0a00, #2e1200);
-      border: 1px solid rgba(239, 68, 68, 0.35);
-      border-radius: 12px;
-      padding: 16px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      flex-wrap: wrap;
-    }
-    .ticker-label {
-      font-size: 12px;
-      font-weight: 700;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: #f97316;
-    }
-    .ticker-label span { display: block; font-size: 10px; font-weight: 500; color: #9a3412; margin-top: 2px; letter-spacing: 0; text-transform: none; }
-    .ticker-value {
-      font-size: clamp(22px, 4vw, 32px);
-      font-weight: 900;
-      color: #fff;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -0.5px;
-    }
-    .ticker-value small { font-size: 14px; font-weight: 500; color: #f97316; display: block; text-align: right; margin-top: 2px; }
-
-    /* ── CALCULATOR GRID ──────────────────────────────────────── */
-    .calc-grid {
-      max-width: 1060px;
+    /* ── MAIN LAYOUT ──────────────────────────────────────── */
+    .main {
+      max-width: 960px;
       margin: 0 auto;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 28px;
       align-items: start;
     }
-    @media (max-width: 780px) {
-      .calc-grid { grid-template-columns: 1fr; }
+    @media (max-width: 720px) {
+      .main { grid-template-columns: 1fr; }
     }
 
-    /* ── CARDS ────────────────────────────────────────────────── */
-    .card {
+    /* ── INPUTS PANEL ─────────────────────────────────────── */
+    .inputs-panel {
       background: #0c1e3d;
       border: 1px solid #19325a;
-      border-radius: 14px;
-      padding: 22px 24px;
-      margin-bottom: 16px;
+      border-radius: 16px;
+      padding: 28px 28px 24px;
     }
-    .card:last-child { margin-bottom: 0; }
-    .card-head {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 22px;
+    .panel-title {
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #475569;
+      margin-bottom: 28px;
     }
-    .card-icon {
-      width: 34px; height: 34px;
-      background: #162f57;
-      border-radius: 8px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 15px;
-    }
-    .card-title { font-size: 15px; font-weight: 700; color: #fff; }
 
-    /* ── SLIDERS ──────────────────────────────────────────────── */
-    .inp-group { margin-bottom: 20px; }
+    .inp-group { margin-bottom: 26px; }
     .inp-group:last-child { margin-bottom: 0; }
     .inp-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 9px;
+      align-items: baseline;
+      margin-bottom: 10px;
+      gap: 12px;
     }
-    .inp-label { font-size: 13px; color: #94a3b8; font-weight: 500; }
-    .inp-badge {
-      font-size: 12px; font-weight: 700; color: #fff;
-      background: #162f57; padding: 4px 12px; border-radius: 6px;
-      min-width: 100px; text-align: center;
+    .inp-label {
+      font-size: 14px;
+      color: #cbd5e1;
+      font-weight: 500;
+      line-height: 1.3;
     }
-    .inp-hint { font-size: 11px; color: #475569; margin-top: 5px; line-height: 1.4; }
+    .inp-val {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      white-space: nowrap;
+      background: #162f57;
+      padding: 4px 12px;
+      border-radius: 6px;
+      min-width: 90px;
+      text-align: center;
+    }
 
     input[type=range] {
       -webkit-appearance: none; appearance: none;
       width: 100%; height: 4px; border-radius: 2px;
       outline: none; cursor: pointer;
-      background: linear-gradient(
-        to right,
-        #3b82f6 var(--p, 30%),
-        #19325a var(--p, 30%)
-      );
+      background: linear-gradient(to right, #3b82f6 var(--p,30%), #1e3a5f var(--p,30%));
     }
     input[type=range]::-webkit-slider-thumb {
-      -webkit-appearance: none; appearance: none;
-      width: 16px; height: 16px; border-radius: 50%;
+      -webkit-appearance: none;
+      width: 18px; height: 18px; border-radius: 50%;
       background: #3b82f6; cursor: pointer;
-      box-shadow: 0 0 0 4px rgba(59,130,246,0.25);
+      box-shadow: 0 0 0 4px rgba(59,130,246,.2);
     }
     input[type=range]::-moz-range-thumb {
-      width: 16px; height: 16px; border-radius: 50%;
+      width: 18px; height: 18px; border-radius: 50%;
       background: #3b82f6; cursor: pointer; border: none;
-      box-shadow: 0 0 0 4px rgba(59,130,246,0.25);
+      box-shadow: 0 0 0 4px rgba(59,130,246,.2);
     }
 
-    /* ── TRUST ────────────────────────────────────────────────── */
-    .trust {
-      background: #0c1e3d;
-      border: 1px solid #19325a;
-      border-radius: 14px;
-      padding: 20px 24px;
+    .assumptions {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #19325a;
     }
-    .trust-eyebrow {
-      font-size: 10px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: #475569; margin-bottom: 14px;
+    .assumptions-lbl {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #334155;
+      margin-bottom: 10px;
     }
-    .trust-quote {
-      font-size: 13px; color: #94a3b8; font-style: italic;
-      margin-bottom: 12px; line-height: 1.55;
+    .assumptions p {
+      font-size: 12px;
+      color: #334155;
+      line-height: 1.6;
     }
-    .trust-link { font-size: 12px; color: #3b82f6; text-decoration: none; }
-    .trust-link:hover { text-decoration: underline; }
+    .assumptions a {
+      color: #3b82f6;
+      text-decoration: none;
+      font-size: 12px;
+    }
+    .assumptions a:hover { text-decoration: underline; }
 
-    /* ── OUTPUT: DRAG CARD ────────────────────────────────────── */
+    /* ── OUTPUTS PANEL ────────────────────────────────────── */
+    .outputs-panel { display: flex; flex-direction: column; gap: 16px; }
+
+    /* Cost of inaction */
     .drag-card {
-      background: linear-gradient(160deg, #1a0800 0%, #2d1300 100%);
-      border: 1px solid #7c2d12;
-      border-radius: 14px;
-      padding: 22px 24px;
-      margin-bottom: 16px;
+      background: linear-gradient(150deg, #1a0800 0%, #2d1300 100%);
+      border: 1px solid rgba(239,68,68,.3);
+      border-radius: 16px;
+      padding: 26px 28px;
       position: relative;
       overflow: hidden;
     }
     .drag-card::before {
       content: '';
       position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, #f59e0b, #ef4444, #f59e0b);
+      background: linear-gradient(90deg, #f59e0b, #ef4444);
     }
-    .drag-card-label {
-      font-size: 10px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: #f59e0b; margin-bottom: 10px;
+    .card-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #f59e0b;
+      margin-bottom: 10px;
     }
-    .drag-big {
-      font-size: clamp(32px, 5vw, 50px);
-      font-weight: 900; color: #fff; line-height: 1;
-      margin-bottom: 4px; font-variant-numeric: tabular-nums;
-    }
-    .drag-sub {
-      font-size: 13px; color: #fca5a5; margin-bottom: 18px; line-height: 1.4;
-    }
-    .drag-row {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-      margin-bottom: 14px;
-    }
-    .drag-mini {
-      background: rgba(0,0,0,0.3); border-radius: 8px; padding: 10px 14px;
-    }
-    .drag-mini-lbl {
-      font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
-      color: #f97316; margin-bottom: 4px;
-    }
-    .drag-mini-val {
-      font-size: 20px; font-weight: 800; color: #fff;
+    .big-num {
+      font-size: clamp(34px, 5vw, 52px);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
       font-variant-numeric: tabular-nums;
+      margin-bottom: 6px;
     }
-    .drag-footnote {
-      font-size: 11px; color: #92400e; line-height: 1.5;
-      border-top: 1px solid rgba(124,45,18,.4); padding-top: 12px;
+    .big-sub {
+      font-size: 13px;
+      color: #fca5a5;
+      line-height: 1.45;
     }
 
-    /* ── OUTPUT: VALUE HERO ───────────────────────────────────── */
-    .value-hero {
-      background: #0c1e3d; border: 1px solid #19325a;
-      border-radius: 14px; padding: 22px 24px;
-      margin-bottom: 16px; text-align: center;
+    /* ROI card */
+    .roi-card {
+      background: #0c1e3d;
+      border: 1px solid #19325a;
+      border-radius: 16px;
+      padding: 26px 28px;
     }
-    .value-hero-lbl {
-      font-size: 10px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: #3b82f6; margin-bottom: 8px;
-      display: flex; align-items: center; justify-content: center; gap: 6px;
-    }
-    .value-hero-num {
-      font-size: clamp(38px, 6vw, 58px);
-      font-weight: 900; color: #fff; line-height: 1; margin-bottom: 6px;
-      font-variant-numeric: tabular-nums;
-    }
-    .value-hero-sub { font-size: 13px; color: #64748b; }
+    .roi-card .big-num { color: #10b981; }
+    .roi-card .big-sub { color: #64748b; }
 
-    /* ── OUTPUT: METRICS GRID ─────────────────────────────────── */
-    .metrics-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 12px; margin-bottom: 16px;
+    /* Metrics row */
+    .metrics-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
     }
     .metric {
-      background: #0c1e3d; border: 1px solid #19325a;
-      border-radius: 14px; padding: 16px 18px;
+      background: #0c1e3d;
+      border: 1px solid #19325a;
+      border-radius: 14px;
+      padding: 18px 20px;
     }
     .metric-lbl {
-      font-size: 10px; font-weight: 700; letter-spacing: 1.5px;
-      text-transform: uppercase; color: #475569; margin-bottom: 7px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: #334155;
+      margin-bottom: 8px;
     }
-    .metric-val {
-      font-size: clamp(22px, 3vw, 30px);
-      font-weight: 800; color: #fff; line-height: 1;
-      margin-bottom: 4px; font-variant-numeric: tabular-nums;
+    .metric-num {
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+      margin-bottom: 4px;
     }
-    .metric-val.green { color: #10b981; }
-    .metric-sub { font-size: 11px; color: #475569; margin-bottom: 6px; }
-    .metric-pill {
-      display: inline-block; font-size: 10px;
-      padding: 2px 8px; border-radius: 999px;
-      background: rgba(16,185,129,.15); color: #10b981;
+    .metric-note {
+      font-size: 12px;
+      color: #475569;
     }
 
-    /* ── OUTPUT: BREAKDOWN ────────────────────────────────────── */
-    .breakdown {
-      background: #0c1e3d; border: 1px solid #19325a;
-      border-radius: 14px; padding: 20px 24px; margin-bottom: 16px;
+    /* Narrative box */
+    .narrative {
+      background: rgba(245,158,11,.06);
+      border: 1px solid rgba(245,158,11,.18);
+      border-radius: 14px;
+      padding: 20px 22px;
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.7;
     }
-    .section-lbl {
-      font-size: 10px; font-weight: 700; letter-spacing: 2px;
-      text-transform: uppercase; color: #3b82f6; margin-bottom: 18px;
-    }
-    .bd-row {
-      display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
-    }
-    .bd-row:last-child { margin-bottom: 0; }
-    .bd-name { font-size: 13px; color: #94a3b8; width: 155px; flex-shrink: 0; }
-    .bd-bar-wrap { flex: 1; }
-    .bd-bar { height: 6px; border-radius: 3px; transition: width 0.3s ease; }
-    .bd-amt { font-size: 13px; font-weight: 700; color: #fff; width: 56px; text-align: right; flex-shrink: 0; }
+    .narrative strong { color: #fbbf24; }
 
-    /* ── OUTPUT: SUMMARY ──────────────────────────────────────── */
-    .summary {
-      background: #0c1e3d; border: 1px solid #19325a;
-      border-radius: 14px; padding: 20px 24px; margin-bottom: 16px;
-    }
-    .summary p { font-size: 13px; color: #94a3b8; line-height: 1.65; margin-bottom: 12px; }
-    .summary p:last-child { margin-bottom: 0; }
-    .summary strong { color: #fff; }
-    .inaction-box {
-      background: rgba(245,158,11,.07);
-      border: 1px solid rgba(245,158,11,.2);
-      border-radius: 8px; padding: 12px 14px;
-      font-size: 12px; color: #fbbf24; line-height: 1.6;
-    }
-    .inaction-box strong { color: #f59e0b; }
-
-    /* ── HOW CALCULATED ───────────────────────────────────────── */
-    .how {
-      border-top: 1px solid #19325a; margin-bottom: 20px; padding-top: 14px;
-    }
-    .how-toggle {
-      width: 100%; background: none; border: none; cursor: pointer;
-      display: flex; justify-content: space-between; align-items: center;
-      font-size: 13px; color: #64748b; padding: 0; text-align: left;
-    }
-    .how-body {
-      display: none; font-size: 12px; color: #64748b;
-      line-height: 1.65; padding-top: 12px;
-    }
-    .how-body strong { color: #94a3b8; }
-
-    /* ── CTA ──────────────────────────────────────────────────── */
-    .cta-wrap { text-align: center; }
+    /* CTA */
     .cta-btn {
-      display: inline-block; width: 100%;
+      width: 100%;
       background: linear-gradient(135deg, #1d4ed8, #2563eb);
-      color: #fff; font-size: 16px; font-weight: 800;
-      padding: 17px 32px; border-radius: 11px; border: none;
-      cursor: pointer; transition: all .2s;
-      box-shadow: 0 4px 24px rgba(37,99,235,.45);
+      color: #fff;
+      font-size: 15px;
+      font-weight: 800;
+      padding: 17px 28px;
+      border-radius: 12px;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+      box-shadow: 0 4px 24px rgba(37,99,235,.4);
       letter-spacing: 0.2px;
     }
     .cta-btn:hover {
       transform: translateY(-2px);
       box-shadow: 0 8px 28px rgba(37,99,235,.55);
     }
-    .cta-sub { font-size: 12px; color: #475569; margin-top: 9px; }
+    .cta-sub {
+      font-size: 12px;
+      color: #334155;
+      text-align: center;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- HERO -->
   <div class="hero">
     <div class="hero-eyebrow">⚡ Uniform Platform ROI Calculator</div>
-    <h1>Nobody puts the cost of <em>staying put</em><br>on the slide next to the migration budget.</h1>
-    <p>Enter your numbers. See what platform drag is already costing you — not a case study. Yours.</p>
+    <h1>The cost of <em>staying put</em> never makes it onto the migration budget.</h1>
+    <p>Enter your numbers. See what platform drag is costing you today — and what you get back.</p>
   </div>
 
-  <!-- LIVE DRAG TICKER -->
-  <div class="ticker-bar">
-    <div>
-      <div class="ticker-label">
-        ⏱ Platform drag since you opened this page
-        <span>Calculated from your daily revenue rate and launch delay gap</span>
+  <div class="main">
+
+    <!-- INPUTS -->
+    <div class="inputs-panel">
+      <div class="panel-title">Your numbers</div>
+
+      <div class="inp-group">
+        <div class="inp-row">
+          <span class="inp-label">Annual revenue from digital campaigns</span>
+          <span class="inp-val" id="lbl-revenue">$20M</span>
+        </div>
+        <input type="range" id="revenue" min="1000000" max="200000000" value="20000000" step="500000">
+      </div>
+
+      <div class="inp-group">
+        <div class="inp-row">
+          <span class="inp-label">Current campaign launch cycle</span>
+          <span class="inp-val" id="lbl-weeks">5 weeks</span>
+        </div>
+        <input type="range" id="weeks" min="1" max="12" value="5" step="1">
+      </div>
+
+      <div class="inp-group">
+        <div class="inp-row">
+          <span class="inp-label">Dev-dependent campaigns per month</span>
+          <span class="inp-val" id="lbl-campaigns">4</span>
+        </div>
+        <input type="range" id="campaigns" min="1" max="20" value="4" step="1">
+      </div>
+
+      <div class="inp-group">
+        <div class="inp-row">
+          <span class="inp-label">Annual platform investment</span>
+          <span class="inp-val" id="lbl-investment">$200K</span>
+        </div>
+        <input type="range" id="investment" min="50000" max="500000" value="200000" step="10000">
+      </div>
+
+      <div class="assumptions">
+        <div class="assumptions-lbl">Baked-in assumptions</div>
+        <p>
+          60% speed-to-market improvement (TELUS achieved 50%) ·
+          50% of dev-blocked campaigns marketers can own ·
+          40% platform adoption ·
+          $175K blended developer cost
+        </p>
+        <a href="#" style="display:inline-block;margin-top:8px;">How this is calculated ↓</a>
       </div>
     </div>
-    <div class="ticker-value" id="ticker">$0.00 <small>and counting</small></div>
-  </div>
 
-  <!-- CALCULATOR -->
-  <div class="calc-grid">
+    <!-- OUTPUTS -->
+    <div class="outputs-panel">
 
-    <!-- ═══════════ LEFT: INPUTS ═══════════ -->
-    <div>
-
-      <!-- Your Marketing Team -->
-      <div class="card">
-        <div class="card-head">
-          <div class="card-icon">📣</div>
-          <div class="card-title">Your Marketing Team</div>
-        </div>
-
-        <div class="inp-group">
-          <div class="inp-row">
-            <span class="inp-label">Campaigns requiring dev support (monthly)</span>
-            <span class="inp-badge" id="lbl-devftes">4 campaigns</span>
-          </div>
-          <input type="range" id="devftes" min="1" max="20" value="4" step="1">
-          <div class="inp-hint">Campaigns your team can't launch without filing a developer ticket</div>
-        </div>
-
-        <div class="inp-group">
-          <div class="inp-row">
-            <span class="inp-label">Fully-loaded developer cost (annual)</span>
-            <span class="inp-badge" id="lbl-devcost">$175,000</span>
-          </div>
-          <input type="range" id="devcost" min="75000" max="350000" value="175000" step="5000">
-        </div>
-
-        <div class="inp-group">
-          <div class="inp-row">
-            <span class="inp-label">Campaigns marketers could own without dev</span>
-            <span class="inp-badge" id="lbl-devtime">50%</span>
-          </div>
-          <input type="range" id="devtime" min="10" max="90" value="50" step="5">
-          <div class="inp-hint">Share of blocked work your team could handle with the right platform</div>
-        </div>
-      </div>
-
-      <!-- Your Business -->
-      <div class="card">
-        <div class="card-head">
-          <div class="card-icon">📈</div>
-          <div class="card-title">Your Business</div>
-        </div>
-
-        <div class="inp-group">
-          <div class="inp-row">
-            <span class="inp-label">Campaign-driven annual revenue</span>
-            <span class="inp-badge" id="lbl-revenue">$20.0M</span>
-          </div>
-          <input type="range" id="revenue" min="1000000" max="200000000" value="20000000" step="500000">
-          <div class="inp-hint">Annual revenue attributable to digital campaigns and experience launches</div>
-        </div>
-
-        <div class="inp-group">
-          <div class="inp-row">
-            <span class="inp-label">Current launch cycle: idea → live (weeks)</span>
-            <span class="inp-badge" id="lbl-launchweeks">5 weeks</span>
-          </div>
-          <input type="range" id="launchweeks" min="1" max="12" value="5" step="1">
-          <div class="inp-hint">How long it currently takes to go from campaign concept to live customer experience</div>
-        </div>
-
-        <div class="inp-group">
-          <div class="inp-row">
-            <span class="inp-label">Speed-to-market improvement with Uniform</span>
-            <span class="inp-badge" id="lbl-speedimprove">60%</span>
-          </div>
-          <input type="range" id="speedimprove" min="20" max="80" value="60" step="5">
-          <div class="inp-hint">Reduction in campaign launch cycle time (TELUS achieved 50%)</div>
-        </div>
-      </div>
-
-      <!-- Platform -->
-      <div class="card">
-        <div class="card-head">
-          <div class="card-icon">⚡</div>
-          <div class="card-title">Platform</div>
-        </div>
-
-        <div class="inp-group">
-          <div class="inp-row">
-            <span class="inp-label">Adoption rate</span>
-            <span class="inp-badge" id="lbl-adoption">40%</span>
-          </div>
-          <input type="range" id="adoption" min="20" max="100" value="40" step="5">
-          <div class="inp-hint">Percentage of eligible team workflows actively using Uniform</div>
-        </div>
-
-        <div class="inp-group">
-          <div class="inp-row">
-            <span class="inp-label">Annual platform investment</span>
-            <span class="inp-badge" id="lbl-investment">$200,000</span>
-          </div>
-          <input type="range" id="investment" min="50000" max="500000" value="200000" step="10000">
-        </div>
-      </div>
-
-      <!-- Trust -->
-      <div class="trust">
-        <div class="trust-eyebrow">Trusted by Industry Leaders</div>
-        <div class="trust-quote">"TELUS reduced time-to-market by 50% and realized $1.1M in instant ROI after implementing Uniform."</div>
-        <div class="trust-quote">"Tivity Health saved millions annually after transitioning to Uniform's composable DXP."</div>
-        <a href="#" class="trust-link">Recognized as a Visionary in the 2025 Gartner Magic Quadrant for Digital Experience Platforms →</a>
-      </div>
-
-    </div>
-
-    <!-- ═══════════ RIGHT: OUTPUTS ═══════════ -->
-    <div>
-
-      <!-- Platform Drag Hero -->
       <div class="drag-card">
-        <div class="drag-card-label">⚠️ What Platform Drag Costs You Annually</div>
-        <div class="drag-big" id="out-drag-annual">$14,000,000</div>
-        <div class="drag-sub">In unrealized revenue at your current launch cycle — <span id="out-drag-gap">21 days</span> of delay per campaign</div>
-        <div class="drag-row">
-          <div class="drag-mini">
-            <div class="drag-mini-lbl">Per Day</div>
-            <div class="drag-mini-val" id="out-drag-daily">$38,356</div>
-          </div>
-          <div class="drag-mini">
-            <div class="drag-mini-lbl">Per Week</div>
-            <div class="drag-mini-val" id="out-drag-weekly">$268,493</div>
-          </div>
-        </div>
-        <div class="drag-footnote">
-          Your daily revenue rate × <span id="out-drag-gap2">21</span>-day launch gap × 12 campaigns/year.
-          This number never appears on the migration budget slide — but it's real, and it compounds every quarter you wait.
-        </div>
+        <div class="card-eyebrow">⚠ Cost of inaction — per year</div>
+        <div class="big-num" id="out-drag">$14,000,000</div>
+        <div class="big-sub">In unrealized revenue from a <span id="out-gap">21-day</span> launch delay per campaign</div>
       </div>
 
-      <!-- Value Hero -->
-      <div class="value-hero">
-        <div class="value-hero-lbl">🏆 Projected Annual Value</div>
-        <div class="value-hero-num" id="out-gross">$3,740,000</div>
-        <div class="value-hero-sub">Total gross value at <span id="out-adoption-lbl">40%</span> adoption</div>
+      <div class="roi-card">
+        <div class="card-eyebrow" style="color:#10b981;">✦ Net annual value with Uniform</div>
+        <div class="big-num" id="out-net">$3,540,000</div>
+        <div class="big-sub" id="out-roi-sub">18.7× return on your $200K investment</div>
       </div>
 
-      <!-- Metrics -->
-      <div class="metrics-grid">
+      <div class="metrics-row">
         <div class="metric">
-          <div class="metric-lbl">💰 Net Annual Value</div>
-          <div class="metric-val green" id="out-net">$3,540,000</div>
-          <div class="metric-sub">After platform investment</div>
+          <div class="metric-lbl">Breakeven</div>
+          <div class="metric-num" id="out-breakeven">19 days</div>
+          <div class="metric-note" id="out-breakeven-note">Faster than one launch cycle</div>
         </div>
         <div class="metric">
-          <div class="metric-lbl">⏱️ Breakeven</div>
-          <div class="metric-val" id="out-breakeven">19 days</div>
-          <div class="metric-sub">Time to positive ROI</div>
-          <div class="metric-pill" id="out-breakeven-pill">Faster than your launch cycle</div>
-        </div>
-        <div class="metric">
-          <div class="metric-lbl">📣 Campaigns Unlocked</div>
-          <div class="metric-val" id="out-campaigns">10</div>
-          <div class="metric-sub">Per year without a dev ticket</div>
-        </div>
-        <div class="metric">
-          <div class="metric-lbl">⚡ Value Multiple</div>
-          <div class="metric-val" id="out-multiple">18.7x</div>
-          <div class="metric-sub">For every $1 invested</div>
+          <div class="metric-lbl">Campaigns unlocked</div>
+          <div class="metric-num" id="out-campaigns-out">10</div>
+          <div class="metric-note">Per year without a dev ticket</div>
         </div>
       </div>
 
-      <!-- Breakdown -->
-      <div class="breakdown">
-        <div class="section-lbl">Value Breakdown</div>
-        <div class="bd-row">
-          <div class="bd-name">Marketer Capacity Value</div>
-          <div class="bd-bar-wrap"><div class="bd-bar" id="bar-cap" style="background:#3b82f6;width:4%"></div></div>
-          <div class="bd-amt" id="out-cap-val">$140K</div>
-        </div>
-        <div class="bd-row">
-          <div class="bd-name">Revenue Acceleration Value</div>
-          <div class="bd-bar-wrap"><div class="bd-bar" id="bar-rev" style="background:#2563eb;width:97%"></div></div>
-          <div class="bd-amt" id="out-rev-val">$3.6M</div>
-        </div>
-        <div class="bd-row">
-          <div class="bd-name">Platform Investment</div>
-          <div class="bd-bar-wrap"><div class="bd-bar" id="bar-inv" style="background:#334155;width:5%"></div></div>
-          <div class="bd-amt" id="out-inv-val">$200K</div>
-        </div>
-      </div>
+      <div class="narrative" id="out-narrative">Loading…</div>
 
-      <!-- Summary -->
-      <div class="summary">
-        <div class="section-lbl">The Real Cost of Waiting</div>
-        <p id="out-summary-1">Loading…</p>
-        <div class="inaction-box" id="out-inaction-box">Loading…</div>
-      </div>
-
-      <!-- How calculated -->
-      <div class="how">
-        <button class="how-toggle" onclick="toggleHow(this)">
-          How this estimate is calculated <span>▼</span>
-        </button>
-        <div class="how-body">
-          <strong>Platform Drag:</strong> (Annual revenue ÷ 12 ÷ 30) × launch gap days × 12. Based on Gene Parone's methodology — your daily revenue rate multiplied by the days of delay you absorb every campaign cycle.<br><br>
-          <strong>Marketer Capacity Value:</strong> Monthly dev-dependent campaigns × annual developer cost × % marketers could own × adoption rate.<br><br>
-          <strong>Revenue Acceleration Value:</strong> Annual campaign revenue × speed-to-market improvement × 75% revenue attribution × adoption rate.<br><br>
-          <strong>Breakeven:</strong> Annual platform investment ÷ (gross annual value ÷ 365).
-        </div>
-      </div>
-
-      <!-- CTA -->
-      <div class="cta-wrap">
+      <div>
         <button class="cta-btn">Get Your Platform Drag Analysis →</button>
-        <div class="cta-sub">See how much waiting another quarter is costing your specific business</div>
+        <div class="cta-sub">See how much waiting another quarter is costing you</div>
       </div>
 
     </div>
   </div>
 
   <script>
-    // ── FORMATTING ─────────────────────────────────────────────
     function fmtShort(n) {
-      const abs = Math.abs(n);
-      if (abs >= 1e6)  return '$' + (n / 1e6).toFixed(1) + 'M';
-      if (abs >= 1e3)  return '$' + Math.round(n / 1e3) + 'K';
+      const a = Math.abs(n);
+      if (a >= 1e6) return '$' + (n/1e6).toFixed(1) + 'M';
+      if (a >= 1e3) return '$' + Math.round(n/1e3) + 'K';
       return '$' + Math.round(n).toLocaleString();
     }
     function fmtFull(n) {
       return '$' + Math.round(n).toLocaleString();
     }
-    function fmtTicker(n) {
-      return '$' + n.toFixed(2);
-    }
 
-    // ── SLIDER PROGRESS ────────────────────────────────────────
     function syncSlider(el) {
       const pct = ((el.value - el.min) / (el.max - el.min)) * 100;
       el.style.setProperty('--p', pct + '%');
     }
 
-    // ── STATE ──────────────────────────────────────────────────
-    let dailyDragRate = 0;
-    let pageOpenTime  = Date.now();
+    // Fixed assumptions
+    const SPEED_PCT   = 0.60;
+    const DEV_OWN_PCT = 0.50;
+    const ADOPTION    = 0.40;
+    const DEV_COST    = 175000;
 
-    // ── CORE CALCULATION ───────────────────────────────────────
     function calc() {
-      const devFTEs       = +document.getElementById('devftes').value;
-      const devCost       = +document.getElementById('devcost').value;
-      const devTimePct    = +document.getElementById('devtime').value / 100;
-      const annualRevenue = +document.getElementById('revenue').value;
-      const launchWeeks   = +document.getElementById('launchweeks').value;
-      const speedPct      = +document.getElementById('speedimprove').value / 100;
-      const adoptionPct   = +document.getElementById('adoption').value / 100;
-      const investment    = +document.getElementById('investment').value;
+      const revenue    = +document.getElementById('revenue').value;
+      const weeks      = +document.getElementById('weeks').value;
+      const campaigns  = +document.getElementById('campaigns').value;
+      const investment = +document.getElementById('investment').value;
 
-      // ── Update labels
-      document.getElementById('lbl-devftes').textContent       = devFTEs + (devFTEs === 1 ? ' campaign' : ' campaigns');
-      document.getElementById('lbl-devcost').textContent       = '$' + devCost.toLocaleString();
-      document.getElementById('lbl-devtime').textContent       = Math.round(devTimePct * 100) + '%';
-      document.getElementById('lbl-revenue').textContent       = fmtShort(annualRevenue);
-      document.getElementById('lbl-launchweeks').textContent   = launchWeeks + (launchWeeks === 1 ? ' week' : ' weeks');
-      document.getElementById('lbl-speedimprove').textContent  = Math.round(speedPct * 100) + '%';
-      document.getElementById('lbl-adoption').textContent      = Math.round(adoptionPct * 100) + '%';
-      document.getElementById('lbl-investment').textContent    = '$' + investment.toLocaleString();
+      // Labels
+      document.getElementById('lbl-revenue').textContent    = fmtShort(revenue);
+      document.getElementById('lbl-weeks').textContent      = weeks + (weeks === 1 ? ' week' : ' weeks');
+      document.getElementById('lbl-campaigns').textContent  = campaigns;
+      document.getElementById('lbl-investment').textContent = fmtShort(investment);
 
-      // ── Platform drag (Gene's formula)
-      const monthlyRevenue   = annualRevenue / 12;
-      const dailyRevRate     = monthlyRevenue / 30;
-      const targetWeeks      = launchWeeks * (1 - speedPct);
-      const launchGapDays    = Math.round((launchWeeks - targetWeeks) * 7);
-      const annualDrag       = dailyRevRate * launchGapDays * 12;
-      dailyDragRate          = annualDrag / 365;
-      const weeklyDrag       = dailyDragRate * 7;
+      // Platform drag
+      const dailyRev      = (revenue / 12) / 30;
+      const targetWeeks   = weeks * (1 - SPEED_PCT);
+      const gapDays       = Math.round((weeks - targetWeeks) * 7);
+      const annualDrag    = dailyRev * gapDays * 12;
 
-      // ── Value calcs
-      const capValue         = devFTEs * devCost * devTimePct * adoptionPct;
-      const revAccelValue    = annualRevenue * speedPct * 0.75 * adoptionPct;
-      const grossValue       = capValue + revAccelValue;
-      const netValue         = grossValue - investment;
-      const valueMultiple    = grossValue / investment;
-      const breakevenDays    = Math.round(investment / (grossValue / 365));
-      const campaignsUnlocked = Math.round(devFTEs * devTimePct * adoptionPct * 12);
+      // Value
+      const capValue      = campaigns * DEV_COST * DEV_OWN_PCT * ADOPTION;
+      const revAccel      = revenue * SPEED_PCT * 0.75 * ADOPTION;
+      const grossValue    = capValue + revAccel;
+      const netValue      = grossValue - investment;
+      const multiple      = (grossValue / investment).toFixed(1);
+      const breakevenDays = Math.round(investment / (grossValue / 365));
+      const unlocked      = Math.round(campaigns * DEV_OWN_PCT * ADOPTION * 12);
 
-      // ── Drag outputs
-      document.getElementById('out-drag-annual').textContent  = fmtFull(annualDrag);
-      document.getElementById('out-drag-daily').textContent   = fmtFull(dailyDragRate);
-      document.getElementById('out-drag-weekly').textContent  = fmtFull(weeklyDrag);
-      document.getElementById('out-drag-gap').textContent     = launchGapDays + ' days';
-      document.getElementById('out-drag-gap2').textContent    = launchGapDays;
+      // Outputs
+      document.getElementById('out-drag').textContent        = fmtFull(annualDrag);
+      document.getElementById('out-gap').textContent         = gapDays + '-day';
+      document.getElementById('out-net').textContent         = fmtFull(netValue);
+      document.getElementById('out-roi-sub').textContent     = multiple + '× return on your ' + fmtShort(investment) + ' investment';
+      document.getElementById('out-breakeven').textContent   = breakevenDays + ' days';
+      document.getElementById('out-campaigns-out').textContent = unlocked;
 
-      // ── Value outputs
-      document.getElementById('out-gross').textContent        = fmtFull(grossValue);
-      document.getElementById('out-net').textContent          = fmtFull(netValue);
-      document.getElementById('out-adoption-lbl').textContent = Math.round(adoptionPct * 100) + '%';
-      document.getElementById('out-breakeven').textContent    = breakevenDays + ' days';
-      document.getElementById('out-campaigns').textContent    = campaignsUnlocked;
-      document.getElementById('out-multiple').textContent     = valueMultiple.toFixed(1) + 'x';
+      const breakNote = document.getElementById('out-breakeven-note');
+      breakNote.textContent = breakevenDays < (weeks * 7)
+        ? 'Faster than one launch cycle'
+        : Math.ceil(breakevenDays / 7) + ' weeks to payback';
 
-      // Breakeven pill
-      const breakevenPill = document.getElementById('out-breakeven-pill');
-      if (breakevenDays < launchWeeks * 7) {
-        breakevenPill.textContent = 'Faster than your launch cycle';
-      } else {
-        breakevenPill.textContent = Math.ceil(breakevenDays / 7) + ' weeks to payback';
-      }
-
-      // ── Breakdown bars
-      const maxBar = Math.max(revAccelValue, capValue, investment, 1);
-      document.getElementById('bar-cap').style.width  = Math.max(2, (capValue / maxBar) * 100) + '%';
-      document.getElementById('bar-rev').style.width  = Math.max(2, (revAccelValue / maxBar) * 100) + '%';
-      document.getElementById('bar-inv').style.width  = Math.max(2, (investment / maxBar) * 100) + '%';
-      document.getElementById('out-cap-val').textContent = fmtShort(capValue);
-      document.getElementById('out-rev-val').textContent = fmtShort(revAccelValue);
-      document.getElementById('out-inv-val').textContent = fmtShort(investment);
-
-      // ── Executive summary
-      const targetWksDisplay = targetWeeks.toFixed(1);
-      document.getElementById('out-summary-1').innerHTML =
-        `At current assumptions, your team takes <strong>${launchWeeks} weeks</strong> to go from campaign idea to live experience. ` +
-        `With Uniform, that drops to <strong>${targetWksDisplay} weeks</strong> — a ${Math.round(speedPct * 100)}% improvement. ` +
-        `At your revenue rate, that <strong>${launchGapDays}-day launch gap</strong> is costing you <strong>${fmtFull(annualDrag)}</strong> annually in platform drag. ` +
-        `Deploying Uniform delivers <strong>${fmtFull(netValue)}</strong> in net annual value — ` +
-        `a <strong>${valueMultiple.toFixed(1)}x return</strong> on your ${fmtShort(investment)} investment, with breakeven in <strong>${breakevenDays} days</strong>.`;
-
-      document.getElementById('out-inaction-box').innerHTML =
-        `<strong>The migration isn't the career risk. Waiting is.</strong> Every week you delay is another ${fmtFull(weeklyDrag)} in unrealized revenue ` +
-        `that never shows up on the budget slide — but is costing you anyway. ` +
-        `No one gets fired for staying on the platform they inherited. They do miss the number, though.`;
-
-      // Reset ticker start so it re-counts from current rate
-      pageOpenTime = Date.now();
+      document.getElementById('out-narrative').innerHTML =
+        `Your team currently takes <strong>${weeks} weeks</strong> from idea to live. ` +
+        `Uniform cuts that to <strong>${targetWeeks.toFixed(1)} weeks</strong>. ` +
+        `That ${gapDays}-day gap is costing you <strong>${fmtFull(annualDrag)}/year</strong> in unrealized revenue — ` +
+        `a number that never appears on the migration budget slide. ` +
+        `Uniform returns <strong>${fmtFull(netValue)} net</strong> and pays for itself in <strong>${breakevenDays} days</strong>. ` +
+        `Every week you wait is another ${fmtFull((annualDrag / 52))} out the door.`;
     }
 
-    // ── LIVE TICKER ────────────────────────────────────────────
-    function tickerUpdate() {
-      const elapsed = (Date.now() - pageOpenTime) / 1000; // seconds
-      const perSecond = dailyDragRate / 86400;
-      const accrued = perSecond * elapsed;
-      document.getElementById('ticker').innerHTML =
-        fmtTicker(accrued) + ' <small>and counting</small>';
-    }
-    setInterval(tickerUpdate, 100);
-
-    // ── TOGGLE HOW ─────────────────────────────────────────────
-    function toggleHow(btn) {
-      const body = btn.nextElementSibling;
-      const arrow = btn.querySelector('span');
-      const open = body.style.display === 'block';
-      body.style.display = open ? 'none' : 'block';
-      arrow.textContent = open ? '▼' : '▲';
-    }
-
-    // ── WIRE SLIDERS ───────────────────────────────────────────
     document.querySelectorAll('input[type=range]').forEach(el => {
       syncSlider(el);
       el.addEventListener('input', () => { syncSlider(el); calc(); });
     });
 
-    // Initial run
     calc();
   </script>
 </body>
