@@ -119,6 +119,13 @@
       box-shadow: 0 0 0 4px rgba(59,130,246,.2);
     }
 
+    .inp-hint {
+      font-size: 11px;
+      color: #475569;
+      margin-top: 6px;
+      line-height: 1.45;
+    }
+
     .assumptions {
       margin-top: 24px;
       padding-top: 20px;
@@ -347,6 +354,7 @@
           <span class="inp-val" id="lbl-campaigns">4</span>
         </div>
         <input type="range" id="campaigns" min="1" max="20" value="4" step="1">
+        <div class="inp-hint">Drives campaigns unlocked and marketer capacity value — not the revenue drag calculation, which is a function of revenue rate and launch delay</div>
       </div>
 
       <div class="inp-group">
@@ -377,13 +385,14 @@
         <div class="assumptions-lbl">Baked-in assumptions</div>
         <p>
           50% of dev-blocked campaigns marketers can own ·
-          40% platform adoption
+          40% platform adoption ·
+          75% revenue attribution (conservative discount: not all speed gains convert directly to revenue)
         </p>
         <a href="#" class="how-toggle" id="how-toggle" onclick="toggleHow(event)" style="display:inline-block;margin-top:8px;">How this is calculated ↓</a>
         <div class="how-body" id="how-body">
           <div class="how-section">
             <div class="how-title">Cost of Inaction</div>
-            <div class="how-formula">(Annual revenue ÷ 12 ÷ 30) × launch gap days × 12</div>
+            <div class="how-formula">(Annual revenue ÷ 365) × launch gap days × 12</div>
             <div class="how-breakdown" id="how-breakdown-text">Loading…</div>
           </div>
           <div class="how-section">
@@ -391,9 +400,13 @@
             <div class="how-formula">Current cycle weeks × speed improvement % × 7</div>
             <p class="how-note" id="how-gap-note">Loading…</p>
           </div>
-          <div class="how-section" style="border-bottom:none;padding-bottom:0;margin-bottom:0;">
+          <div class="how-section">
             <div class="how-title">Why multiply by 12?</div>
-            <p class="how-note">Every campaign in the year absorbs the same delay. The cost compounds across your full campaign calendar — it never shows up as a line item, but it accrues every cycle.</p>
+            <p class="how-note">The drag formula assumes one campaign cycle per month — 12 launch cycles per year. Each absorbs the same delay. The number of dev-dependent campaigns per month drives the <strong>campaigns unlocked</strong> and <strong>marketer capacity</strong> metrics, not this drag figure.</p>
+          </div>
+          <div class="how-section" style="border-bottom:none;padding-bottom:0;margin-bottom:0;">
+            <div class="how-title">Why is the drag larger than the net return?</div>
+            <p class="how-note">The drag figure is the <strong>theoretical maximum</strong> — what you lose assuming 100% of the delay converts to lost revenue. The net return applies two conservative discounts: <strong>40% adoption</strong> (not every workflow moves to Uniform immediately) and <strong>75% revenue attribution</strong> (not every speed gain converts directly to revenue). The drag is the ceiling; the net return is the conservative floor.</p>
           </div>
         </div>
       </div>
@@ -416,9 +429,9 @@
 
       <div class="metrics-row">
         <div class="metric">
-          <div class="metric-lbl">Breakeven</div>
+          <div class="metric-lbl">Investment payback</div>
           <div class="metric-num" id="out-breakeven">19 days</div>
-          <div class="metric-note" id="out-breakeven-note">Faster than one launch cycle</div>
+          <div class="metric-note" id="out-breakeven-note">Days of value generated to recover platform cost</div>
         </div>
         <div class="metric">
           <div class="metric-lbl">Campaigns unlocked</div>
@@ -474,7 +487,7 @@
       document.getElementById('lbl-devcost').textContent    = fmtShort(devCost);
 
       // Platform drag
-      const dailyRev      = (revenue / 12) / 30;
+      const dailyRev      = revenue / 365;
       const targetWeeks   = weeks * (1 - speedPct);
       const gapDays       = Math.round((weeks - targetWeeks) * 7);
       const annualDrag    = dailyRev * gapDays * 12;
@@ -497,14 +510,12 @@
       document.getElementById('out-campaigns-out').textContent = unlocked;
 
       const breakNote = document.getElementById('out-breakeven-note');
-      breakNote.textContent = breakevenDays < (weeks * 7)
-        ? 'Faster than one launch cycle'
-        : Math.ceil(breakevenDays / 7) + ' weeks to payback';
+      breakNote.textContent = 'Days of value generated to recover platform cost';
 
       // How-calculated live breakdown
       document.getElementById('how-breakdown-text').innerHTML =
-        `(<strong>${fmtShort(revenue)}</strong> ÷ 12 ÷ 30) = <strong>${fmtFull(dailyRev)}</strong>/day &nbsp;×&nbsp; ` +
-        `<strong>${gapDays} days</strong> gap &nbsp;×&nbsp; 12 campaigns = <strong>${fmtFull(annualDrag)}/year</strong>`;
+        `(<strong>${fmtShort(revenue)}</strong> ÷ 365) = <strong>${fmtFull(dailyRev)}</strong>/day &nbsp;×&nbsp; ` +
+        `<strong>${gapDays} days</strong> gap &nbsp;×&nbsp; 12 cycles/year = <strong>${fmtFull(annualDrag)}/year</strong>`;
       document.getElementById('how-gap-note').innerHTML =
         `At <strong>${weeks} weeks</strong> and <strong>${Math.round(speedPct * 100)}%</strong> improvement: ` +
         `${weeks} × ${speedPct.toFixed(2)} × 7 = <strong>${gapDays} days</strong> saved per campaign.`;
